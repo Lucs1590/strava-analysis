@@ -3,6 +3,19 @@ from pandas.io.json import json_normalize
 import json
 
 
+def main():
+    url = "https://www.strava.com/api/v3/activities"
+    access_token = get_credentials()
+
+    page = 1
+    while True:
+        response = get_data(url, access_token, 200, page)
+        if not response:
+            break
+        save_csv(response)
+        page += 1
+
+
 def get_data(url, access_token, numb_item_page, page):
     response = requests.get('{0}?access_token={1}&per_page={2}&page={3}'.format(
         url, access_token, numb_item_page, page))
@@ -21,13 +34,5 @@ def save_csv(response):
     df.to_csv('data/strava_activities_page_{}.csv'.format(page))
 
 
-url = "https://www.strava.com/api/v3/activities"
-access_token = get_credentials()
-
-page = 1
-while True:
-    response = get_data(url, access_token, 200, page)
-    if not response:
-        break
-    save_csv(response)
-    page += 1
+if __name__ == '__main__':
+    main()
