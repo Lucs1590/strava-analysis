@@ -1,6 +1,7 @@
 import os
 import json
 import glob
+import time
 import requests
 import pandas as pd
 
@@ -22,7 +23,33 @@ def main():
 def get_credentials():
     with open('strava_tokens.json') as json_file:
         strava_tokens = json.load(json_file)
+
+    if strava_tokens['expires_at'] < time.time():
+        strava_tokens = refresh_credentials(strava_tokens)
+
     return strava_tokens['access_token']
+
+
+def refresh_credentials(strava_tokens):
+    response = requests.post(
+        url='https://www.strava.com/oauth/token',
+        data={
+            'client_id': int(os.environ.get('client_id')),
+            'client_secret': os.environ.get('client_secret'),
+            'grant_type': 'refresh_token',
+            'refresh_token': strava_tokens['refresh_token']
+        }
+    )
+
+    strava_tokens = response.json()
+
+    with open('strava_tokens.json', 'w') as outfile:
+        json.dump(strava_tokens, outfile)
+
+    with open('strava_tokens.json') as check:
+        data = json.load(check)
+
+    return data
 
 
 def get_data(url, access_token, numb_item_page, page):
