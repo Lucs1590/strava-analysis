@@ -3,7 +3,6 @@ import json
 import glob
 import requests
 import pandas as pd
-from pandas.io.json import json_normalize
 
 
 def main():
@@ -30,7 +29,7 @@ def get_data(url, access_token, numb_item_page, page):
     response = requests.get('{0}?access_token={1}&per_page={2}&page={3}'.format(
         url, access_token, numb_item_page, page))
     response = response.json()
-    dataframe = json_normalize(response)
+    dataframe = pd.json_normalize(response)
     return dataframe
 
 
