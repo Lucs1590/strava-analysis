@@ -12,8 +12,14 @@ def main():
         response = get_data(url, access_token, 200, page)
         if not response:
             break
-        save_csv(response)
+        save_csv(response, 'data/strava_activities_page_{}.csv'.format(page))
         page += 1
+
+
+def get_credentials():
+    with open('strava_tokens.json') as json_file:
+        strava_tokens = json.load(json_file)
+    return strava_tokens['access_token']
 
 
 def get_data(url, access_token, numb_item_page, page):
@@ -23,15 +29,9 @@ def get_data(url, access_token, numb_item_page, page):
     return response
 
 
-def get_credentials():
-    with open('strava_tokens.json') as json_file:
-        strava_tokens = json.load(json_file)
-    return strava_tokens['access_token']
-
-
-def save_csv(response):
+def save_csv(response, filename):
     df = json_normalize(response)
-    df.to_csv('data/strava_activities_page_{}.csv'.format(page))
+    df.to_csv(filename)
 
 
 if __name__ == '__main__':
