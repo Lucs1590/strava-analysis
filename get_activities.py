@@ -17,7 +17,7 @@ def main():
             break
         save_csv(response, 'data/strava_activities_page_{}.csv'.format(page))
         page += 1
-    merge_files('data/', 'strava_all_activities.csv')
+    merge_files('data/', 'results/strava_all_activities.csv')
 
 
 def get_credentials():
