@@ -18,7 +18,7 @@ def get_credentials():
 
 def save_csv(response):
     df = json_normalize(response)
-    df.to_csv('data/strava_activities_all_fields_pag{}.csv'.format(page))
+    df.to_csv('data/strava_activities_page_{}.csv'.format(page))
 
 
 url = "https://www.strava.com/api/v3/activities"
