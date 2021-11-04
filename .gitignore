@@ -110,6 +110,7 @@ ENV/
 env.bak/
 venv.bak/
 .vscode/
+data/
 strava_tokens.json
 
 # Spyder project settings
