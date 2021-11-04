@@ -1,6 +1,9 @@
-import requests
-from pandas.io.json import json_normalize
+import os
 import json
+import glob
+import requests
+import pandas as pd
+from pandas.io.json import json_normalize
 
 
 def main():
@@ -10,10 +13,11 @@ def main():
     page = 1
     while True:
         response = get_data(url, access_token, 200, page)
-        if not response:
+        if not response.empty:
             break
         save_csv(response, 'data/strava_activities_page_{}.csv'.format(page))
         page += 1
+    merge_files('data/', 'strava_all_activities.csv')
 
 
 def get_credentials():
@@ -26,12 +30,20 @@ def get_data(url, access_token, numb_item_page, page):
     response = requests.get('{0}?access_token={1}&per_page={2}&page={3}'.format(
         url, access_token, numb_item_page, page))
     response = response.json()
-    return response
+    dataframe = json_normalize(response)
+    return dataframe
 
 
-def save_csv(response, filename):
-    df = json_normalize(response)
-    df.to_csv(filename)
+def save_csv(dataframe, filename):
+    dataframe.to_csv(filename)
+
+
+def merge_files(path, filename):
+    csv_files = [pd.read_csv(_file)
+                 for _file in glob.glob(os.path.join(path, "*.csv"))]
+    final_df = csv_files.pop(len(csv_files)-1)
+    final_df = final_df.append(csv_files)
+    save_csv(final_df, filename)
 
 
 if __name__ == '__main__':
