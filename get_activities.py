@@ -13,7 +13,7 @@ def main():
     page = 1
     while True:
         response = get_data(url, access_token, 200, page)
-        if not response.empty:
+        if response.empty:
             break
         save_csv(response, 'data/strava_activities_page_{}.csv'.format(page))
         page += 1
