@@ -13,7 +13,9 @@ def main():
     page = 1
     while True:
         response = get_data(url, access_token, 200, page)
-        if response.empty:
+        if 'message' in response.columns:
+            raise Exception('Authorization Error')
+        elif response.empty:
             break
         save_csv(response, 'data/strava_activities_page_{}.csv'.format(page))
         page += 1
@@ -24,7 +26,7 @@ def get_credentials():
     with open('strava_tokens.json') as json_file:
         strava_tokens = json.load(json_file)
 
-    if strava_tokens['expires_at'] < time.time():
+    if 'expires_at' not in strava_tokens.keys() or strava_tokens['expires_at'] < time.time():
         strava_tokens = refresh_credentials(strava_tokens)
 
     return strava_tokens['access_token']
@@ -53,6 +55,7 @@ def refresh_credentials(strava_tokens):
 
 
 def get_data(url, access_token, numb_item_page, page):
+    print('Getting data from page {}'.format(page))
     response = requests.get('{0}?access_token={1}&per_page={2}&page={3}'.format(
         url, access_token, numb_item_page, page))
     response = response.json()
@@ -61,10 +64,12 @@ def get_data(url, access_token, numb_item_page, page):
 
 
 def save_csv(dataframe, filename):
+    print('Saving {}'.format(filename))
     dataframe.to_csv(filename)
 
 
 def merge_files(path, filename):
+    print('Merging files')
     csv_files = [pd.read_csv(_file)
                  for _file in glob.glob(os.path.join(path, "*.csv"))]
     final_df = csv_files.pop(len(csv_files)-1)
