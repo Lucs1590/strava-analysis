@@ -15,15 +15,15 @@ def main():
         response = get_data(url, access_token, 200, page)
         if 'message' in response.columns:
             raise Exception('Authorization Error')
-        elif response.empty:
+        if response.empty:
             break
-        save_csv(response, 'data/strava_activities_page_{}.csv'.format(page))
+        save_csv(response, f'data/strava_activities_page_{page}.csv')
         page += 1
     merge_files('data/', 'result/strava_all_activities.csv')
 
 
 def get_credentials():
-    with open('strava_tokens.json') as json_file:
+    with open('strava_tokens.json', encoding='utf-8') as json_file:
         strava_tokens = json.load(json_file)
 
     if 'expires_at' not in strava_tokens.keys() or strava_tokens['expires_at'] < time.time():
@@ -45,26 +45,27 @@ def refresh_credentials(strava_tokens):
 
     strava_tokens = response.json()
 
-    with open('strava_tokens.json', 'w') as outfile:
+    with open('strava_tokens.json', 'w', encoding='utf-8') as outfile:
         json.dump(strava_tokens, outfile)
 
-    with open('strava_tokens.json') as check:
+    with open('strava_tokens.json', encoding='utf-8') as check:
         data = json.load(check)
 
     return data
 
 
 def get_data(url, access_token, numb_item_page, page):
-    print('Getting data from page {}'.format(page))
-    response = requests.get('{0}?access_token={1}&per_page={2}&page={3}'.format(
-        url, access_token, numb_item_page, page))
+    print(f'Getting data from page {page}')
+    response = requests.get(
+        f'{url}?access_token={access_token}&per_page={numb_item_page}&page={page}'
+    )
     response = response.json()
     dataframe = pd.json_normalize(response)
     return dataframe
 
 
 def save_csv(dataframe, filename):
-    print('Saving {}'.format(filename))
+    print(f'Saving {filename}')
     dataframe.to_csv(filename)
 
 

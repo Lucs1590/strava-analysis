@@ -1,6 +1,6 @@
-import requests
-import json
 import os
+import json
+import requests
 
 response = requests.post(
     url='https://www.strava.com/oauth/token',
@@ -14,10 +14,10 @@ response = requests.post(
 
 strava_tokens = response.json()
 
-with open('strava_tokens.json', 'w') as outfile:
+with open('strava_tokens.json', 'w', encoding='utf-8') as outfile:
     json.dump(strava_tokens, outfile)
 
-with open('strava_tokens.json') as check:
+with open('strava_tokens.json', encoding='utf-8') as check:
     data = json.load(check)
 
 print(data)
