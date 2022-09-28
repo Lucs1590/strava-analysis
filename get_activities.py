@@ -11,6 +11,7 @@ def main():
     access_token = get_credentials()
 
     page = 1
+    print('Getting data from Strava')
     while True:
         response = get_data(url, access_token, 200, page)
         if 'message' in response.columns:
