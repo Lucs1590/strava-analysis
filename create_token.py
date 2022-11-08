@@ -1,6 +1,9 @@
 import os
 import json
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 response = requests.post(
     url='https://www.strava.com/oauth/token',

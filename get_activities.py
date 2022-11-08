@@ -4,7 +4,9 @@ import glob
 import time
 import requests
 import pandas as pd
+from dotenv import load_dotenv
 
+load_dotenv()
 
 def main():
     url = "https://www.strava.com/api/v3/activities"
