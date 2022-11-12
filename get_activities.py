@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def main():
     url = "https://www.strava.com/api/v3/activities"
     access_token = get_credentials()
@@ -24,6 +25,7 @@ def main():
         page += 1
     merge_files('data/', 'result/strava_all_activities.csv')
     print('Done Successfully')
+
 
 def get_credentials():
     with open('strava_tokens.json', encoding='utf-8') as json_file:
