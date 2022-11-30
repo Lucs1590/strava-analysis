@@ -1,0 +1,5 @@
+- completar location_city e location_state com base em start_lating
+- fazer alguma analise baseada em kudos_count e comment_count
+- fazer analise de baseada em recordes e conquistas (pr_count e achievement_count)
+- verificar se a corrida foi em grupo ou não (baseado em athlete_count)
+- tirar alguma métrica baseada em athlete_count e max_heartrate
