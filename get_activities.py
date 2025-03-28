@@ -66,6 +66,8 @@ def get_data(url, access_token, numb_item_page, page):
     )
     response = response.json()
     dataframe = pd.json_normalize(response)
+    dataframe['distance'] = dataframe['distance'].apply(round_distance)
+    dataframe['distance_bin'] = dataframe['distance'].apply(assign_to_bin)
     return dataframe
 
 
@@ -81,6 +83,19 @@ def merge_files(path, filename):
     final_df = csv_files.pop(len(csv_files)-1)
     final_df = final_df.append(csv_files)
     save_csv(final_df, filename)
+
+
+def round_distance(distance):
+    return round(distance, 1)
+
+
+def is_within_tolerance(distance1, distance2, tolerance=0.1):
+    return abs(distance1 - distance2) <= tolerance
+
+
+def assign_to_bin(distance):
+    bins = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+    return min(bins, key=lambda x: abs(x - distance))
 
 
 if __name__ == '__main__':
